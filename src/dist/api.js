@@ -5,10 +5,10 @@ let addPrefix = (route) =>  {
 };
 
 
-export const ROUTE_REGISTER = addPrefix('user/register');
-export const ROUTE_LOGIN = addPrefix('user/login');
+export const ROUTE_REGISTER = addPrefix('api/register');
+export const ROUTE_LOGIN = addPrefix('api/login');
 
 
-export const EVENT_CREATE = addPrefix('event/create');
-export const EVENT_LISTING = addPrefix('event/get');
-export const EVENT_DETAILS = addPrefix('event/get/:id');
+export const EVENT_CREATE = addPrefix('api/create');
+export const EVENT_LISTING = addPrefix('api/get');
+export const EVENT_DETAILS = addPrefix('api/get/:id');

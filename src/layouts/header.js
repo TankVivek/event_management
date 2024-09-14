@@ -1,54 +1,69 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-import { HOME, LOGOUT } from '../dist/routes';
-import Authentication from '../helpers/auth';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { HOME, LOGOUT, LOGIN } from '../dist/routes';
 
-export default class Header extends Component{
-    
+export default class Header extends Component {
+
     state = {
         loggedIn: false
     };
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state.loggedIn = props.loggedIn;
     }
 
-    componentWillReceiveProps({loggedIn}){
-        if(loggedIn !== this.state.loggedIn)
-            this.setState({loggedIn});
+    componentWillReceiveProps({ loggedIn }) {
+        if (loggedIn !== this.state.loggedIn)
+            this.setState({ loggedIn });
     }
 
     renderLogout = () => {
-        if(this.state.loggedIn)
+        if (this.state.loggedIn)
             return (
-                <li className="nav-item"><Link className="nav-link" to={LOGOUT}>Logout</Link></li>
+                <Link to={LOGOUT}>
+                    <button className="btn btn-danger">Logout</button>
+                </Link>
             );
     };
 
-    render(){
+    render() {
         return (
-            <header className="header_area">
-                <div className="main_menu">
-                    <nav className="navbar navbar-expand-lg navbar-light">
-                        <div className="container box_1620">
-                            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <span className="icon-bar"></span>
-                                <span className="icon-bar"></span>
-                                <span className="icon-bar"></span>
-                            </button>
-                            <div className="collapse navbar-collapse offset" id="navbarSupportedContent">
-                                <ul className="nav navbar-nav menu_nav ml-auto">
-                                    <li className="nav-item active"><Link className="nav-link" to={HOME}>Home</Link></li> 
-                                    <li className="nav-item"><a className="nav-link" href="#">About</a></li> 
-                                    <li className="nav-item"><a className="nav-link" href="#">Contact</a></li>
-                                    { this.renderLogout() }
-                                </ul>
-                            </div> 
-                        </div>
-                    </nav>
+            <header className="header">
+                <div className="container">
+                    <div className="d-flex align-items-center">
+                        <header style={{
+                            display: 'flex',
+                            justifyContent: 'center', /* Center horizontally */
+                            alignItems: 'center', /* Center vertically */
+                            padding: '1rem',
+                        }}>
+                            <h1 style={{
+                                fontSize: '1.5rem', /* Adjust font size as needed */
+                                color: 'white',
+                                margin: 0, /* Remove default margin */
+                            }}>
+                                <Link to={HOME} style={{
+                                    color: 'inherit', /* Inherit color from parent h1 */
+                                    textDecoration: 'none', /* Remove underline from link */
+                                }}>
+                                    Event Management
+                                </Link>
+                            </h1>
+                        </header>
+
+                    </div>
+                    <div>
+                        <Link to={HOME}>
+                            <button className="btn btn-secondary">Events Info</button>
+                        </Link>
+                        <Link to={LOGIN} style={{ color: 'white' }}>
+                            <button className="btn btn-primary">Login</button>
+                        </Link>
+                        {this.renderLogout()}
+                    </div>
                 </div>
             </header>
-            );
+        );
     }
 }

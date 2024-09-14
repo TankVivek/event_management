@@ -1,0 +1,135 @@
+/* mainpage.css */
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .header {
+    background-color: #343a40; /* Dark color */
+    color: #ffffff;
+    padding: 1rem;
+  }
+  
+  .header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header .btn {
+    margin-left: 0.5rem;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    background-color: #f8f9fa; /* Light color */
+    padding: 2rem 0;
+  }
+  
+  .main-content img {
+    max-width: 80%;
+  }
+  
+  .footer {
+    background-color: #343a40; /* Dark color */
+    color: #ffffff;
+    padding: 1rem 0;
+  }
+  
+  .footer .container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .footer .col-md-4 {
+    flex: 1;
+    padding: 1rem;
+  }
+  
+  .footer .text-white {
+    color: #ffffff;
+  }
+  
+  .footer .list-unstyled {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .footer .list-unstyled li {
+    margin-bottom: 0.5rem;
+  }
+  /* Header Area Styling */
+.header_area {
+  background-color: #343a40; /* Dark background for the header */
+  padding: 20px 0; /* Add vertical padding */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.header_area .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header_area .navbar-toggler {
+  background-color: #fff;
+  border: none;
+}
+
+.header_area .icon-bar {
+  width: 22px;
+  height: 2px;
+  background-color: #fff;
+  display: block;
+  margin: 4px 0;
+}
+
+.header_area .menu_nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header_area .menu_nav .nav-item {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.header_area .menu_nav .nav-link {
+  color: #fff;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 10px 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.header_area .menu_nav .nav-link:hover {
+  background-color: #007bff; /* Change background on hover */
+  color: #fff; /* Keep text white */
+  border-radius: 5px; /* Add some rounding to the button */
+}
+
+/* Active Link */
+.header_area .menu_nav .nav-item.active .nav-link {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+}
+
+/* Media Query for Mobile View */
+@media (max-width: 768px) {
+  .header_area {
+      padding: 10px 0;
+  }
+
+  .header_area .menu_nav {
+      text-align: center;
+  }
+
+  .header_area .menu_nav .nav-item {
+      display: block;
+      margin: 10px 0;
+  }
+}

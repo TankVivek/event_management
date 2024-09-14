@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import MainPage from "../features/main";
-import { HOME, LOGIN, REGISTRATION, EVENT_CALENDAR, EVENT_CREATE, LOGOUT } from "../dist/routes";
+import { HOME, LOGIN, REGISTRATION, EVENT_CREATE, LOGOUT } from "../dist/routes";
 import LoginPage from "../features/auth/login";
 import RegistrationPage from "../features/auth/register";
-import EventCalendar from "../features/event/calendar";
 import EventCreate from "../features/event/create";
 import Authentication from "../helpers/auth";
 import Header from "../layouts/header";
@@ -56,10 +55,6 @@ class AppContainer extends Component{
                         path={REGISTRATION}
                         exact
                         render={()=><RegistrationPage />} />
-                    <Route
-                        path={EVENT_CALENDAR}
-                        exact
-                        render={()=><EventCalendar />} />
                     <Route
                         path={EVENT_CREATE}
                         exact
