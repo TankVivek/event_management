@@ -1,37 +1,37 @@
 const User = require('../model/userModel');
 const { hashPassword, comparePassword, generateToken } = require('../utils/helper');
 
-const register = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
-  try {
-    if (!firstName || !lastName || !email || !password) {
-      return res.status(400).json({
+  const register = async (req, res) => {
+    const { firstName, lastName, email, password } = req.body;
+    try {
+      if (!firstName || !lastName || !email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "All fields are required.",
+        });
+      }
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "User already exists.",
+        });
+      }
+      const hashedPassword = await hashPassword(password);
+      const user = await User.create({ firstName, lastName, email, password: hashedPassword });
+      res.status(201).json({
+        success: true,
+        message: "Registration successful!",
+        user,
+      });
+    } catch (error) {
+      res.status(500).json({
         success: false,
-        message: "All fields are required.",
+        message: "An error occurred during registration.",
+        error: error.message,
       });
     }
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists.",
-      });
-    }
-    const hashedPassword = await hashPassword(password);
-    const user = await User.create({ firstName, lastName, email, password: hashedPassword });
-    res.status(201).json({
-      success: true,
-      message: "Registration successful!",
-      user,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "An error occurred during registration.",
-      error: error.message,
-    });
-  }
-};
+  };
 
 
 const login = async (req, res) => {

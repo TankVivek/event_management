@@ -1,0 +1,26 @@
+{
+    "roles": [
+      {
+        "name": "user",
+        "permissions": [
+          "read"
+        ]
+      },
+      {
+        "name": "admin",
+        "permissions": [
+          "read",
+          "write",
+          "delete"
+        ]
+      },
+      {
+        "name": "manager",
+        "permissions": [
+          "read",
+          "write"
+        ]
+      }
+    ]
+  }
+  
