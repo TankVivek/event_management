@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LOGIN, EVENT_CREATE, VIEW_EVENTS } from '../../dist/routes';
+import { LOGIN, EVENT_CREATE, VIEW_EVENTS, EVENT_BOOKING_GET } from '../../dist/routes'; // Add the new route for event booking
 import Authentication from '../../helpers/auth';
 import '../../styles/mainpage.css'; // Import your new CSS file
 
 const MainPage = () => {
     const [loggedIn, setLoggedIn] = useState(false);
+    const [role, setRole] = useState(null); // State to store the user role
 
- useEffect(() => {
-    const auth = new Authentication();
-    const isLoggedIn = auth.isUserLoggedIn();
-    setLoggedIn(isLoggedIn);
-}, []);
-
+    useEffect(() => {
+        const auth = new Authentication();
+        const isLoggedIn = auth.isUserLoggedIn();
+        setLoggedIn(isLoggedIn);
+        
+        if (isLoggedIn) {
+            const userRole = localStorage.getItem('role');
+            console.log('User Role from localStorage:', userRole);
+            setRole(userRole);
+        }
+    }, []);
+    
+    // Only render after role is determined
+    if (role === null && loggedIn) {
+        return <div>Loading...</div>;
+    }
+    
     return (
         <div className="main-container">
             <main className="main-content">
@@ -30,9 +42,16 @@ const MainPage = () => {
                             <div className="d-flex flex-wrap" style={{ gap: '2rem', marginTop: "100px" }}>
                                 {/* Link to View Events, only accessible if logged in */}
                                 <Link to={loggedIn ? VIEW_EVENTS : LOGIN} className="btn btn-primary btn-lg">View Events</Link>
-                                
-                                {/* Link to Create Event, redirects to login if not logged in */}
-                                <Link to={loggedIn ? EVENT_CREATE : LOGIN} className="btn btn-secondary btn-lg">Create Event</Link>
+
+                                {/* Show Create Event button only if the user role is Admin */}
+                                {role === 'admin' && (
+                                    <Link to={EVENT_CREATE} className="btn btn-secondary btn-lg">Create Event</Link>
+                                )}
+
+                                {/* Show Event Booking link only if the user is logged in */}
+                                {role === 'user' && (
+                                    <Link to={EVENT_BOOKING_GET} className="btn btn-info btn-lg">Event Booking</Link>
+                                )}
                             </div>
                         </div>
                     </div>

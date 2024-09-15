@@ -49,8 +49,14 @@ const LoginPage = ({ onLogin }) => {
             }
     
             if (response.success) {
-                const { token } = response;
-                (new Authentication()).setApiKey(token);
+                const { token, data} = response;
+                const auth = new Authentication();
+                auth.setApiKey(token);
+                auth.setUserRole((data.role || '').toLowerCase());
+                console.log(data._id);
+                
+                auth.setUserId(data._id || '');
+
                 onLogin();
                 setLoginSuccess(true);
                 setSuccessMessage('Login successful!');

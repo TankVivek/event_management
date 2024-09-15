@@ -4,7 +4,12 @@ export default class Authentication {
         localStorage.setItem('apiKey', apiKey);
         localStorage.setItem('user', user);
     }
-
+    setUserRole(role) {
+        localStorage.setItem('role', role);
+    }
+    setUserId(_id) {
+        localStorage.setItem('id', _id);
+    }  
     getApiKey() {
         return localStorage.getItem('apiKey');
     }

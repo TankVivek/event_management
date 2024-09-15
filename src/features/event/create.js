@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import { DateRange } from 'react-date-range';
 import { format } from 'date-fns';
 import { REQUEST_EVENT_CREATE } from '../../requests/event';
 import { getBody } from '../../requests';
 import Controller from '../controller';
-import '../../styles/event-create.css'; // Custom CSS file
+import '../../styles/event-create.css';
 
 const formatDateDisplay = (date, defaultText) => {
     if (!date) return defaultText;
@@ -15,7 +15,7 @@ const formatDateDisplay = (date, defaultText) => {
 
 export default class EventCreate extends Controller {
     state = {
-        address: '', // Location as a simple string
+        address: '',
         dateRange: {
             selection: {
                 startDate: new Date(),
@@ -23,15 +23,16 @@ export default class EventCreate extends Controller {
                 key: 'selection',
             },
         },
+        capacity: '', // Add capacity to state
         loading: false,
         errors: {},
         successMessage: "",
         errorMessage: "",
-        image: null // State to handle image file
+        image: null
     };
 
     handleChange = (event) => {
-        this.setState({ address: event.target.value });
+        this.setState({ [event.target.id]: event.target.value });
     };
 
     handleRangeChange = (payload) => {
@@ -46,7 +47,7 @@ export default class EventCreate extends Controller {
     handleImageChange = (event) => {
         if (event.target.files[0]) {
             this.setState({
-                image: event.target.files[0] // Store the file object
+                image: event.target.files[0]
             });
         }
     };
@@ -57,25 +58,25 @@ export default class EventCreate extends Controller {
     
         const title = this.refs.title.value;
         const details = this.refs.details.value;
-        const location = this.state.address; // Use the location as a simple string
+        const location = this.state.address;
         const date = {
             start: this.state.dateRange.selection.startDate.toISOString(),
             end: this.state.dateRange.selection.endDate.toISOString(),
         };
     
-        // Create FormData object
         const formData = new FormData();
         formData.append('title', title);
         formData.append('description', details);
-        formData.append('location', location); // Append location as a string
+        formData.append('location', location);
         formData.append('startDate', date.start);
         formData.append('endDate', date.end);
+        formData.append('capacity', this.state.capacity); // Add capacity
         if (this.state.image) {
-            formData.append('image', this.state.image); // Append the image file
+            formData.append('image', this.state.image);
         }
     
         REQUEST_EVENT_CREATE(formData, (err, res) => {
-            this.setState({ loading: false }); // Fix to stop loading
+            this.setState({ loading: false });
             if (err) {
                 this.setState({ errorMessage: "Could not connect to the internet" });
                 return;
@@ -83,7 +84,7 @@ export default class EventCreate extends Controller {
     
             const body = getBody(res);
     
-            if (body.success) { // Ensure `body.success` is checked for success
+            if (body.success) {
                 this.setState({ successMessage: "Event created successfully", errorMessage: "" });
             } else {
                 this.setState({ errorMessage: body.message });
@@ -120,7 +121,7 @@ export default class EventCreate extends Controller {
                                         {this.renderFieldError('location')}
                                         <input
                                             type="text"
-                                            id="location"
+                                            id="address"
                                             className="form-control"
                                             value={this.state.address}
                                             onChange={this.handleChange}
@@ -147,6 +148,18 @@ export default class EventCreate extends Controller {
                                                 ranges={[this.state.dateRange.selection]}
                                             />
                                         </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="capacity">Capacity:</label>
+                                        <input
+                                            type="number"
+                                            id="capacity"
+                                            className="form-control"
+                                            value={this.state.capacity}
+                                            onChange={this.handleChange}
+                                            placeholder="Enter event capacity"
+                                        />
+                                        {this.renderFieldError('capacity')}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="image">Upload Image:</label>

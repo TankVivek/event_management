@@ -2,34 +2,37 @@ const Event = require('../model/eventModel');
 const uploadImageToImgBB = require('../utils/imageUpload');
 
 const createEvents = async (req, res) => {
-  const { title, description, location, startDate, endDate } = req.body;
+  const { title, description, location, startDate, endDate, capacity } = req.body;
   const imagePath = req.file ? req.file.path : null;
   try {
-      let imageUrl = null;
-      if (imagePath) {
-          const uploadResponse = await uploadImageToImgBB(imagePath);
-          imageUrl = uploadResponse.data.display_url; // Extract the URL from the response
-      }
+    let imageUrl = null;
+    if (imagePath) {
+      const uploadResponse = await uploadImageToImgBB(imagePath);
+      imageUrl = uploadResponse.data.url_viewer;
+    }
 
-      const newEvent = new Event({
-          title,
-          description,
-          location,
-          startDate,
-          endDate,
-          image: imageUrl, // Store the URL as a string
-      });
+    const newEvent = new Event({
+      title,
+      description,
+      location,
+      startDate,
+      endDate,
+      image: imageUrl,
+      capacity: parseInt(capacity, 10),
+      bookedSeats: 0,
+      bookings: []
+    });
 
-      await newEvent.save();
-      res.status(201).json({
-          success: true,
-          data: newEvent,
-      });
+    await newEvent.save();
+    res.status(201).json({
+      success: true,
+      data: newEvent,
+    });
   } catch (error) {
-      res.status(400).json({
-          success: false,
-          message: error.message,
-      });
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 

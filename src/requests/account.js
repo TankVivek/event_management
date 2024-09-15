@@ -24,3 +24,5 @@ export const REQUEST_LOGIN = (formData, callback) => {
 export const REQUEST_REGISTER = (formData, callback) => {
     return handleRequest(ROUTE_REGISTER, formData, callback);
 };
+
+

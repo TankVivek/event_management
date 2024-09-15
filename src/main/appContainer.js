@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import MainPage from "../features/main";
-import { HOME, LOGIN, REGISTRATION, EVENT_CREATE, VIEW_EVENTS, LOGOUT } from "../dist/routes";
+import { HOME, LOGIN, REGISTRATION, EVENT_CREATE, VIEW_EVENTS, LOGOUT ,EVENT_BOOKING ,EVENT_BOOKING_GET,EVENT_BOOKING_CANCEL } from "../dist/routes";
 import LoginPage from "../features/auth/login";
 import RegistrationPage from "../features/auth/register";
 import EventCreate from "../features/event/create";
 import Authentication from "../helpers/auth";
 import Header from "../layouts/header";
 import EventList from '../features/event/EventList'; // Adjust this path as needed
+import EventBooking from '../features/event/EventBooking'; // Adjust this path as needed
+
 
 class AppContainer extends Component {
     state = {
@@ -58,6 +60,18 @@ class AppContainer extends Component {
                         path={VIEW_EVENTS}
                         exact
                         render={() => <EventList />} />
+                             <Route
+                        path={EVENT_BOOKING}
+                        exact
+                        render={() => <EventBooking />} />
+                             <Route
+                        path={EVENT_BOOKING_GET}
+                        exact
+                        render={() => <EventBooking />} />
+                          <Route
+                        path={EVENT_BOOKING_CANCEL}
+                        exact
+                        render={() => <EventBooking />} />   
                     <Route
                         path={EVENT_CREATE}
                         exact

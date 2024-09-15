@@ -22,9 +22,21 @@ const EventSchema = new mongoose.Schema({
     required: true,
   },
   image: {
-    type: String, // URL or path to the image
+    type: String,
     required: false,
   },
+  capacity: {
+    type: Number,
+    required: true,
+  },
+  bookedSeats: {
+    type: Number,
+    default: 0,
+  },
+  bookings: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Booking'
+  }]
 });
 
 module.exports = mongoose.model('Event', EventSchema);

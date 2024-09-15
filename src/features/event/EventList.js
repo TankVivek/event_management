@@ -17,6 +17,7 @@ const EventList = () => {
     const [updatedLocation, setUpdatedLocation] = useState('');
     const [updatedStartDate, setUpdatedStartDate] = useState('');
     const [updatedEndDate, setUpdatedEndDate] = useState('');
+    const [role, setRole] = useState(null);  // Add role state
     const history = useHistory();
 
     useEffect(() => {
@@ -24,10 +25,22 @@ const EventList = () => {
         if (!auth.isUserLoggedIn()) {
             history.push(LOGIN);
         } else {
-            console.log('Fetching events...');
-            fetchEvents();
+            const userRole = localStorage.getItem('role');
+            if (userRole) {
+                setRole(userRole); // Get the role from localStorage
+                console.log('User Role from localStorage:', userRole);
+            } else {
+                setRole(null);  // Default to null if not available
+            }
         }
     }, [history]);
+
+    useEffect(() => {
+        // Fetch events only if the role is not null
+        if (role !== null) {
+            fetchEvents();
+        }
+    }, [role]);
 
     const fetchEvents = () => {
         setLoading(true);
@@ -123,7 +136,10 @@ const EventList = () => {
             <h2 className="text-center mb-4">Event List</h2>
             <p className="text-center mb-4">Here are all the events</p>
 
-            <Link to={EVENT_CREATE} className="btn btn-primary mb-3">Create New Event</Link>
+            {/* Show "Create New Event" button only if the user role is 'Admin' */}
+            {role === 'admin' && (
+                <Link to={EVENT_CREATE} className="btn btn-primary mb-3">Create New Event</Link>
+            )}
 
             {renderLoading()}
             {renderError()}
@@ -148,12 +164,15 @@ const EventList = () => {
                                         Dates: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
                                     </small>
                                 </div>
-                                <button
-                                    className="btn btn-warning ms-3"
-                                    onClick={() => handleEditClick(event)}
-                                >
-                                    Edit
-                                </button>
+                                {/* Allow editing only if user is 'Admin' */}
+                                {role === 'admin' && (
+                                    <button
+                                        className="btn btn-warning ms-3"
+                                        onClick={() => handleEditClick(event)}
+                                    >
+                                        Edit
+                                    </button>
+                                )}
                             </div>
                             {renderFieldError('event')}
                         </div>
