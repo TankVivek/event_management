@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { HOME } from '../../dist/routes';
-import { Redirect } from 'react-router-dom';
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
@@ -18,7 +15,7 @@ const formatDateDisplay = (date, defaultText) => {
 
 export default class EventCreate extends Controller {
     state = {
-        address: '',
+        address: '', // Location as a simple string
         dateRange: {
             selection: {
                 startDate: new Date(),
@@ -30,28 +27,11 @@ export default class EventCreate extends Controller {
         errors: {},
         successMessage: "",
         errorMessage: "",
-        location: {},
         image: null // State to handle image file
     };
 
-    handleChange = address => {
-        this.setState({ address });
-    };
-
-    handleSelect = address => {
-        geocodeByAddress(address)
-            .then(results => getLatLng(results[0]))
-            .then(latLng => {
-                this.setState({
-                    location: {
-                        lat: latLng.lat,
-                        lng: latLng.lng,
-                        name: address
-                    },
-                    address
-                });
-            })
-            .catch(error => console.error('Error', error));
+    handleChange = (event) => {
+        this.setState({ address: event.target.value });
     };
 
     handleRangeChange = (payload) => {
@@ -73,44 +53,41 @@ export default class EventCreate extends Controller {
 
     submitEvent = (e) => {
         e.preventDefault();
-        this.loading(true);
-
-        let title = this.refs.title.value;
-        let details = this.refs.details.value;
-        let location = this.state.location;
-        let date = {
-            start: this.state.dateRange.selection.startDate,
-            end: this.state.dateRange.selection.endDate,
+        this.setState({ loading: true });
+    
+        const title = this.refs.title.value;
+        const details = this.refs.details.value;
+        const location = this.state.address; // Use the location as a simple string
+        const date = {
+            start: this.state.dateRange.selection.startDate.toISOString(),
+            end: this.state.dateRange.selection.endDate.toISOString(),
         };
-
+    
         // Create FormData object
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append('title', title);
-        formData.append('details', details);
-        formData.append('location', JSON.stringify(location));
-        formData.append('date', JSON.stringify(date));
+        formData.append('description', details);
+        formData.append('location', location); // Append location as a string
+        formData.append('startDate', date.start);
+        formData.append('endDate', date.end);
         if (this.state.image) {
-            formData.append('image', this.state.image);
+            formData.append('image', this.state.image); // Append the image file
         }
-
+    
         REQUEST_EVENT_CREATE(formData, (err, res) => {
-            this.loading(false); // Fix to stop loading
+            this.setState({ loading: false }); // Fix to stop loading
             if (err) {
-                this.setError("Could not connect to the internet");
+                this.setState({ errorMessage: "Could not connect to the internet" });
                 return;
             }
-
-            let body = getBody(res);
-
-            if (body.status) {
-                this.setSuccess(body.message);
-                this.setError("");
-                this.setFieldErrors({});
-                return;
+    
+            const body = getBody(res);
+    
+            if (body.success) { // Ensure `body.success` is checked for success
+                this.setState({ successMessage: "Event created successfully", errorMessage: "" });
+            } else {
+                this.setState({ errorMessage: body.message });
             }
-
-            this.setError(body.message);
-            this.setFieldErrors(body.extras);
         });
     };
 
@@ -141,45 +118,14 @@ export default class EventCreate extends Controller {
                                     <div className="form-group">
                                         <label htmlFor="location">Location:</label>
                                         {this.renderFieldError('location')}
-                                        <PlacesAutocomplete
+                                        <input
+                                            type="text"
+                                            id="location"
+                                            className="form-control"
                                             value={this.state.address}
                                             onChange={this.handleChange}
-                                            onSelect={this.handleSelect}
-                                        >
-                                            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
-                                                const inputProps = getInputProps({
-                                                    placeholder: 'Search Places ...',
-                                                    className: 'form-control location-search-input',
-                                                });
-
-                                                return (
-                                                    <div className="autocomplete-container">
-                                                        <input {...inputProps} />
-                                                        <div className="autocomplete-dropdown-container">
-                                                            {loading && <div>Loading...</div>}
-                                                            {suggestions.map(suggestion => {
-                                                                const className = suggestion.active
-                                                                    ? 'suggestion-item--active'
-                                                                    : 'suggestion-item';
-                                                                const style = suggestion.active
-                                                                    ? { backgroundColor: '#6a8279', cursor: 'pointer' }
-                                                                    : { backgroundColor: '#495057', cursor: 'pointer' };
-                                                                return (
-                                                                    <div
-                                                                        {...getSuggestionItemProps(suggestion, {
-                                                                            className,
-                                                                            style,
-                                                                        })}
-                                                                    >
-                                                                        <span>{suggestion.description}</span>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            }
-                                        </PlacesAutocomplete>
+                                            placeholder="Enter location"
+                                        />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="date">Date:</label>

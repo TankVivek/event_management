@@ -1,27 +1,25 @@
-export default class Authentication{
-    setApiKey = (apiKey, user)=>{
+export default class Authentication {
+    setApiKey(apiKey, user) {
         console.log(apiKey, user);
         localStorage.setItem('apiKey', apiKey);
         localStorage.setItem('user', user);
-    };
+    }
 
-    getApiKey = ()=>{
-       return localStorage.getItem('apiKey');
-    };
+    getApiKey() {
+        return localStorage.getItem('apiKey');
+    }
 
-    getUser = ()=>{
-       return localStorage.getItem('user');
-    };
+    getUser() {
+        return localStorage.getItem('user');
+    }
 
-    isUserLoggedIn = ()=>{
-        console.log(this.getApiKey());
-        return this.getApiKey() != null;
-    };
+    isUserLoggedIn() {
+        return this.getApiKey() !== null;
+    }
 
-    removeApiKey = ()=>{
-        console.log("removin");
+    removeApiKey() {
+        console.log("removing");
         localStorage.removeItem('apiKey');
         localStorage.removeItem('user');
-    };
-
+    }
 }

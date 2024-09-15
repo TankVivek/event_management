@@ -1,117 +1,114 @@
-import React, { Component } from 'react';
-import { HOME, REGISTRATION } from '../../dist/routes';
+import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import Controller from '../controller';
+import { HOME, REGISTRATION } from '../../dist/routes';
 import { REQUEST_LOGIN } from '../../requests/account';
 import Authentication from '../../helpers/auth';
-import '../../styles/common-styles.css'; // Import your CSS file
+import '../../styles/common-styles.css';
 
-export default class LoginPage extends Controller {
-    state = {
-        loading: false,
-        errors: {},
-        successMessage: "", // Message to display after successful login
-        errorMessage: "",
-        loginSuccess: false,
-    };
+const LoginPage = ({ onLogin }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [loginSuccess, setLoginSuccess] = useState(false);
 
-    setError = (message) => {
-        this.setState({ errorMessage: message });
-    };
-
-    setFieldErrors = (errors) => {
-        this.setState({ errors });
-    };
-
-    renderError = () => {
-        if (this.state.errorMessage) {
-            return <div className="error-message">{this.state.errorMessage}</div>;
+    const renderError = () => {
+        if (errorMessage) {
+            return <div className="error-message">{errorMessage}</div>;
         }
         return null;
     };
 
-    renderSuccess = () => {
-        if (this.state.successMessage) {
-            return <div className="success-message">{this.state.successMessage}</div>;
+    const renderSuccess = () => {
+        if (successMessage) {
+            return <div className="success-message">{successMessage}</div>;
         }
         return null;
     };
 
-    renderFieldError = (field) => {
-        if (this.state.errors[field]) {
-            return <div className="field-error">{this.state.errors[field]}</div>;
+    const renderFieldError = (field) => {
+        if (errors[field]) {
+            return <div className="field-error">{errors[field]}</div>;
         }
         return null;
     };
-
-    submitLogin = (e) => {
+    const submitLogin = (e) => {
         e.preventDefault();
-        this.setState({ loading: true, errorMessage: "", successMessage: "" });
-
-        const email = this.refs.email.value;
-        const password = this.refs.password.value;
-
-        REQUEST_LOGIN({ email, password }, (err, res) => {
-            this.setState({ loading: false });
-
+        setLoading(true);
+        setErrorMessage('');
+        setSuccessMessage('');
+    
+        REQUEST_LOGIN({ email, password }, (err, response) => {
+            setLoading(false);
+    
             if (err) {
-                this.setError("Could not connect to the internet: " + err.message);
+                setErrorMessage('Could not connect to the internet: ' + err.message);
                 return;
             }
-
-            if (res.success) {
-                const { token } = res;
+    
+            if (response.success) {
+                const { token } = response;
                 (new Authentication()).setApiKey(token);
-                this.props.onLogin();
-                this.setState({ 
-                    loginSuccess: true, 
-                    successMessage: "Login successful!"  // Show success message
-                });
-
+                onLogin();
+                setLoginSuccess(true);
+                setSuccessMessage('Login successful!');
             } else {
-                this.setError(res.message);
-                this.setFieldErrors(res.extras || {});
+                setErrorMessage(response.message);
+                setErrors(response.extras || {});
             }
         });
     };
+    
 
-    render() {
-        if (this.state.loginSuccess) {
-            return <Redirect to={{ pathname: HOME }} />;
-        }
-
-        const { loading } = this.state;
-
-        return (
-            <div className="page-container">
-                <main className="main-content">
-                    <div className="content-wrapper">
-                        <div className="text-content">
-                            <h2>Login</h2>
-                            <p>Manage your events seamlessly by logging in</p>
-                        </div>
-                        <form onSubmit={this.submitLogin} className="form">
-                            {this.renderError()}
-                            {this.renderSuccess()} {/* This will show success message */}
-                            <div className="form-group">
-                                <input ref="email" type="text" placeholder="Email" required />
-                                {this.renderFieldError('email')}
-                            </div>
-                            <div className="form-group">
-                                <input ref="password" type="password" placeholder="Password" required />
-                                {this.renderFieldError('password')}
-                            </div>
-                            <button className="btn btn-primary" disabled={loading}>
-                                {loading ? "Logging in..." : "Login"}
-                            </button>
-                        </form>
-                        <Link to={REGISTRATION} className="alt-link">Not registered? Register here!</Link>
-                    </div>
-                </main>
-                <footer className="app-footer">
-                    {/* Add footer content here */}
-                </footer>
-            </div>
-        );
+    if (loginSuccess) {
+        return <Redirect to={{ pathname: HOME }} />;
     }
-}
+
+    return (
+        <div className="page-container">
+            <main className="main-content">
+                <div className="content-wrapper">
+                    <div className="text-content">
+                        <h2>Login</h2>
+                        <p>Manage your events seamlessly by logging in</p>
+                    </div>
+                    <form onSubmit={submitLogin} className="form">
+                        {renderError()}
+                        {renderSuccess()}
+                        <div className="form-group">
+                            <input 
+                                type="text" 
+                                placeholder="Email" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                required 
+                            />
+                            {renderFieldError('email')}
+                        </div>
+                        <div className="form-group">
+                            <input 
+                                type="password" 
+                                placeholder="Password" 
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                required 
+                            />
+                            {renderFieldError('password')}
+                        </div>
+                        <button className="btn btn-primary" disabled={loading}>
+                            {loading ? "Logging in..." : "Login"}
+                        </button>
+                    </form>
+                    <Link to={REGISTRATION} className="alt-link">Not registered? Register here!</Link>
+                </div>
+            </main>
+            <footer className="app-footer">
+                {/* Add footer content here */}
+            </footer>
+        </div>
+    );
+};
+
+export default LoginPage;

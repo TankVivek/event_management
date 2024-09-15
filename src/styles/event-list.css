@@ -1,0 +1,24 @@
+.event-list-container {
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px;
+    width: 100%;
+}
+
+.event-item {
+    border: 1px solid #dee2e6; /* Light border */
+    border-radius: 8px; /* Rounded corners for items */
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #ffffff; /* White background for items */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%;
+}
+
+.event-image {
+    border-radius: 8px; /* Rounded corners for images */
+}
+
+.text-center {
+    text-align: center; /* Center align text */
+}

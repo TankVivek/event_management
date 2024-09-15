@@ -1,33 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LOGIN } from '../../dist/routes';
+import { LOGIN, EVENT_CREATE, VIEW_EVENTS } from '../../dist/routes';
 import Authentication from '../../helpers/auth';
 import '../../styles/mainpage.css'; // Import your new CSS file
 
 const MainPage = () => {
     const [loggedIn, setLoggedIn] = useState(false);
 
-    useEffect(() => {
-        const auth = new Authentication();
-        setLoggedIn(auth.isUserLoggedIn());
-    }, []);
+ useEffect(() => {
+    const auth = new Authentication();
+    const isLoggedIn = auth.isUserLoggedIn();
+    setLoggedIn(isLoggedIn);
+}, []);
 
     return (
         <div className="main-container">
-   
-
             <main className="main-content">
                 <div className="container">
                     <div className="row align-items-center">
                         <div className="col-md-6 text-center mb-4 mb-md-0">
-                            <img src="https://img.freepik.com/premium-vector/event-management-wedding-planner-manager-planning-event-conference-party_501813-2157.jpg" alt="Event Management Illustration" />
+                            <img 
+                                src="https://img.freepik.com/premium-vector/event-management-wedding-planner-manager-planning-event-conference-party_501813-2157.jpg" 
+                                alt="Event Management Illustration" 
+                            />
                         </div>
                         <div className="col-md-6">
                             <h2 className="display-4 mb-4">Manage Your Events</h2>
                             <p className="lead mb-4">Streamline your event planning and execution with our powerful tools.</p>
                             <div className="d-flex flex-wrap" style={{ gap: '2rem', marginTop: "100px" }}>
-                                <Link to={loggedIn ? LOGIN : '/login'} className="btn btn-primary btn-lg">View Events</Link>
-                                <Link to={loggedIn ? LOGIN : '/login'} className="btn btn-secondary btn-lg">Create Event</Link>
+                                {/* Link to View Events, only accessible if logged in */}
+                                <Link to={loggedIn ? VIEW_EVENTS : LOGIN} className="btn btn-primary btn-lg">View Events</Link>
+                                
+                                {/* Link to Create Event, redirects to login if not logged in */}
+                                <Link to={loggedIn ? EVENT_CREATE : LOGIN} className="btn btn-secondary btn-lg">Create Event</Link>
                             </div>
                         </div>
                     </div>

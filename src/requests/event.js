@@ -1,12 +1,21 @@
-import { ROUTE_LOGIN, ROUTE_REGISTER, EVENT_CREATE, EVENT_LISTING } from "../dist/api";
-import { POST, GET } from ".";
-import Authentication from "../helpers/auth";
+// src/requests/event.js
+import Authentication from '../helpers/auth'; // Import the Authentication class
+import { EVENT_CREATE, EVENT_LISTING, EVENT_UPDATE } from "../dist/api";
+import { POST, GET, PUT } from "."; // Import PUT here
 
-
-export const REQUEST_EVENT_CREATE = (formData, callback) =>  {
-    return POST(EVENT_CREATE, formData).set('Authorization', 'Bearer '+(new Authentication()).getApiKey()).end(callback);
+const authHeader = () => {
+    const token = (new Authentication()).getApiKey();
+    return { 'Authorization': `Bearer ${token}` };
 };
 
-export const REQUEST_EVENT_GET = (formData, callback) =>  {
-    return GET(EVENT_LISTING, formData).set('Authorization', 'Bearer '+(new Authentication()).getApiKey()).end(callback);
+export const REQUEST_EVENT_CREATE = (formData, callback) => {
+    return POST(EVENT_CREATE, formData).set(authHeader()).end(callback);
+};
+
+export const REQUEST_EVENT_GET = (callback) => {
+    return GET(EVENT_LISTING).set(authHeader()).end(callback);
+};
+
+export const REQUEST_EVENT_UPDATE = (id, formData, callback) => {
+    return PUT(`${EVENT_UPDATE}/${id}`, formData).set(authHeader()).end(callback);
 };

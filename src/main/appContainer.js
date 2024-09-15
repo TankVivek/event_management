@@ -1,52 +1,51 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import MainPage from "../features/main";
-import { HOME, LOGIN, REGISTRATION, EVENT_CREATE, LOGOUT } from "../dist/routes";
+import { HOME, LOGIN, REGISTRATION, EVENT_CREATE, VIEW_EVENTS, LOGOUT } from "../dist/routes";
 import LoginPage from "../features/auth/login";
 import RegistrationPage from "../features/auth/register";
 import EventCreate from "../features/event/create";
 import Authentication from "../helpers/auth";
 import Header from "../layouts/header";
+import EventList from '../features/event/EventList'; // Adjust this path as needed
 
-class AppContainer extends Component{
-    
+class AppContainer extends Component {
     state = {
         loggedIn: false
     };
 
-    componentDidMount(){
+    componentDidMount() {
         this.checkLoginStatus();
     }
 
     checkLoginStatus = () => {
-        let loggedIn = (new Authentication).isUserLoggedIn();
-
-        this.setState({loggedIn});
+        let loggedIn = (new Authentication()).isUserLoggedIn();
+        this.setState({ loggedIn });
     };
 
     logoutAction = () => {
-        (new Authentication).removeApiKey();
+        (new Authentication()).removeApiKey();
         this.checkLoginStatus();
         return (
             <Redirect to={{
-                pathname:HOME,
+                pathname: HOME,
             }} />
         );
     };
 
-    render(){
-        return(
+    render() {
+        return (
             <div className="app__root">
                 <Header loggedIn={this.state.loggedIn} />
                 <Switch>
                     <Route
                         path={HOME}
                         exact
-                        render={()=><MainPage />} />
+                        render={() => <MainPage />} />
                     <Route
                         path={LOGIN}
                         exact
-                        render={()=><LoginPage onLogin={this.checkLoginStatus} />} />
+                        render={() => <LoginPage onLogin={this.checkLoginStatus} />} />
                     <Route
                         path={LOGOUT}
                         exact
@@ -54,11 +53,15 @@ class AppContainer extends Component{
                     <Route
                         path={REGISTRATION}
                         exact
-                        render={()=><RegistrationPage />} />
+                        render={() => <RegistrationPage />} />
+                    <Route
+                        path={VIEW_EVENTS}
+                        exact
+                        render={() => <EventList />} />
                     <Route
                         path={EVENT_CREATE}
                         exact
-                        render={()=><EventCreate />} />
+                        render={() => <EventCreate />} />
                 </Switch>
             </div>
         )
