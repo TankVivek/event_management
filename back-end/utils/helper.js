@@ -18,8 +18,6 @@ const generateToken = (userId , role) => {
 
 const verifyAdmin = async (req, res, next) => {
   try {
-    console.log("authorization");
-
     const authorization = req.headers.authorization;
     const token = authorization && authorization.startsWith('Bearer ')
       ? authorization.slice(7, authorization.length)

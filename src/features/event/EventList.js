@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { REQUEST_EVENT_GET, REQUEST_EVENT_UPDATE } from '../../requests/event';
+import { REQUEST_EVENT_GET, REQUEST_EVENT_UPDATE , REQUEST_BOOKING } from '../../requests/event';
 import { LOGIN, EVENT_CREATE } from '../../dist/routes';
 import Authentication from '../../helpers/auth';
 import '../../styles/event-list.css';  // Import custom CSS for additional styling
@@ -17,7 +17,7 @@ const EventList = () => {
     const [updatedLocation, setUpdatedLocation] = useState('');
     const [updatedStartDate, setUpdatedStartDate] = useState('');
     const [updatedEndDate, setUpdatedEndDate] = useState('');
-    const [role, setRole] = useState(null);  // Add role state
+    const [role, setRole] = useState(null);
     const history = useHistory();
 
     useEffect(() => {
@@ -27,16 +27,14 @@ const EventList = () => {
         } else {
             const userRole = localStorage.getItem('role');
             if (userRole) {
-                setRole(userRole); // Get the role from localStorage
-                console.log('User Role from localStorage:', userRole);
+                setRole(userRole);
             } else {
-                setRole(null);  // Default to null if not available
+                setRole(null);
             }
         }
     }, [history]);
 
     useEffect(() => {
-        // Fetch events only if the role is not null
         if (role !== null) {
             fetchEvents();
         }
@@ -85,8 +83,8 @@ const EventList = () => {
 
             if (body.success) {
                 setSuccessMessage('Event updated successfully!');
-                fetchEvents(); // Refresh events list
-                setEditableEvent(null); // Hide update form
+                fetchEvents();
+                setEditableEvent(null);
             } else {
                 setErrorMessage(body.message || 'Error updating event.');
                 setErrors(body.extras || {});
@@ -103,40 +101,16 @@ const EventList = () => {
         setUpdatedEndDate(event.endDate);
     };
 
-    const renderError = () => {
-        if (errorMessage) {
-            return <div className="alert alert-danger">{errorMessage}</div>;
-        }
-        return null;
-    };
-
-    const renderSuccess = () => {
-        if (successMessage) {
-            return <div className="alert alert-success">{successMessage}</div>;
-        }
-        return null;
-    };
-
-    const renderFieldError = (field) => {
-        if (errors[field]) {
-            return <div className="alert alert-warning">{errors[field]}</div>;
-        }
-        return null;
-    };
-
-    const renderLoading = () => {
-        if (loading) {
-            return <div className="alert alert-info">Loading...</div>;
-        }
-        return null;
-    };
+    const renderError = () => errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : null;
+    const renderSuccess = () => successMessage ? <div className="alert alert-success">{successMessage}</div> : null;
+    const renderFieldError = (field) => errors[field] ? <div className="alert alert-warning">{errors[field]}</div> : null;
+    const renderLoading = () => loading ? <div className="alert alert-info">Loading...</div> : null;
 
     return (
         <div className="container mt-4 event-list-container">
             <h2 className="text-center mb-4">Event List</h2>
             <p className="text-center mb-4">Here are all the events</p>
 
-            {/* Show "Create New Event" button only if the user role is 'Admin' */}
             {role === 'admin' && (
                 <Link to={EVENT_CREATE} className="btn btn-primary mb-3">Create New Event</Link>
             )}
@@ -149,22 +123,22 @@ const EventList = () => {
                 <div className="list-group">
                     {events.map(event => (
                         <div key={event._id} className="list-group-item list-group-item-action event-item">
-                            <div className="d-flex w-100 justify-content-between align-items-center">
+                            <div className="d-flex align-items-start">
                                 <img
                                     src={event.image}
                                     alt={event.title}
                                     className="img-thumbnail me-3 event-image"
-                                    style={{ maxWidth: '150px' }}
+                                    style={{ maxWidth: '200px' }}
                                 />
-                                <div className="d-flex flex-column">
-                                    <h5 className="mb-1">{event.title}</h5>
-                                    <p className="mb-1">{event.description}</p>
+                                <div className="flex-grow-1" style={{ marginLeft: '30px' }}>
+                                    <h5 className="mb-2">{event.title}</h5>
+                                    <p className="mb-2">{event.description}</p>
                                     <small className="text-muted">
-                                        Location: {event.location} <br />
-                                        Dates: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                                        <strong>Location:</strong> {event.location} <br />
+                                        <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
                                     </small>
                                 </div>
-                                {/* Allow editing only if user is 'Admin' */}
+
                                 {role === 'admin' && (
                                     <button
                                         className="btn btn-warning ms-3"
@@ -215,7 +189,7 @@ const EventList = () => {
                             <input
                                 type="date"
                                 className="form-control"
-                                value={updatedStartDate.split('T')[0]} // Format date
+                                value={updatedStartDate.split('T')[0]}
                                 onChange={(e) => setUpdatedStartDate(e.target.value)}
                             />
                         </div>
@@ -224,7 +198,7 @@ const EventList = () => {
                             <input
                                 type="date"
                                 className="form-control"
-                                value={updatedEndDate.split('T')[0]} // Format date
+                                value={updatedEndDate.split('T')[0]}
                                 onChange={(e) => setUpdatedEndDate(e.target.value)}
                             />
                         </div>

@@ -8,7 +8,9 @@ import EventCreate from "../features/event/create";
 import Authentication from "../helpers/auth";
 import Header from "../layouts/header";
 import EventList from '../features/event/EventList'; // Adjust this path as needed
-import EventBooking from '../features/event/EventBooking'; // Adjust this path as needed
+import EventPage from '../features/event/EventBooking'; // Adjust this path as needed
+import UserBooking from '../features/event/UserBooking'; // Adjust this path as needed
+
 
 
 class AppContainer extends Component {
@@ -60,18 +62,22 @@ class AppContainer extends Component {
                         path={VIEW_EVENTS}
                         exact
                         render={() => <EventList />} />
-                             <Route
+                    <Route
                         path={EVENT_BOOKING}
                         exact
-                        render={() => <EventBooking />} />
-                             <Route
+                        render={() => <EventPage />} />
+                    <Route
                         path={EVENT_BOOKING_GET}
                         exact
-                        render={() => <EventBooking />} />
-                          <Route
+                        render={() => <EventPage />} />
+                    <Route
                         path={EVENT_BOOKING_CANCEL}
                         exact
-                        render={() => <EventBooking />} />   
+                        render={() => <EventPage />} />   
+                    <Route
+                        path={EVENT_BOOKING_GET}
+                        exact
+                        render={() => <UserBooking />} />   
                     <Route
                         path={EVENT_CREATE}
                         exact

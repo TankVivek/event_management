@@ -8,9 +8,8 @@ const createEvents = async (req, res) => {
     let imageUrl = null;
     if (imagePath) {
       const uploadResponse = await uploadImageToImgBB(imagePath);
-      imageUrl = uploadResponse.data.url_viewer;
+      imageUrl = uploadResponse.data.display_url;
     }
-
     const newEvent = new Event({
       title,
       description,
@@ -22,7 +21,6 @@ const createEvents = async (req, res) => {
       bookedSeats: 0,
       bookings: []
     });
-
     await newEvent.save();
     res.status(201).json({
       success: true,
@@ -40,7 +38,7 @@ const createEvents = async (req, res) => {
 
 const listEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find().sort({createdAt: -1});
     res.status(200).json({
       success: true,
       data: events,

@@ -20,8 +20,10 @@ export const REQUEST_EVENT_GET = (callback) => {
     return GET(EVENT_LISTING).set(authHeader()).end(callback);
 };
 
-export const REQUEST_BOOKING = (eventId, callback) => {
-    return POST(EVENT_BOOKING.replace(':eventId', eventId)).set(authHeader()).end(callback);
+export const REQUEST_BOOKING = (eventId, members, callback) => {
+    return POST(EVENT_BOOKING.replace(':eventId', eventId).replace(':members', members))
+        .set(authHeader())
+        .end(callback);
 };
 
 export const REQUEST_USER_BOOKING = (id, callback) => {

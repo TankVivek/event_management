@@ -7,7 +7,6 @@ const apiKey = process.env.YOUR_CLIENT_API_KEY; // Replace with your actual ImgB
     const form = new FormData();
     form.append('image', fs.createReadStream(imagePath));
     const url = `https://api.imgbb.com/1/upload?expiration=600&key=${apiKey}`;
-
     try {
         const response = await axios.post(url, form, {
             headers: {
