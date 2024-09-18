@@ -4,7 +4,6 @@ import { REQUEST_EVENT_GET, REQUEST_EVENT_UPDATE, REQUEST_DELETE_EVENT } from '.
 import { LOGIN, EVENT_CREATE } from '../../dist/routes';
 import Authentication from '../../helpers/auth';
 import '../../styles/event-list.css';
-import { FaTrashAlt } from 'react-icons/fa';
 
 const EventList = () => {
     const [events, setEvents] = useState([]);

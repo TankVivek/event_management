@@ -4,3 +4,5 @@
   status = 200
   [build]
   ignore = "false"
+  [context.production.environment]
+  NODE_VERSION = "18"  # specify the Node.js version you need
