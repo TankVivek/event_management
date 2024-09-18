@@ -1,20 +1,48 @@
 {
-  "name": "event_management",
-  "version": "1.0.0",
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
-  "main": "index.js",
+  "name": "brickbase",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "google-map-react": "^1.1.4",
+    "google-maps-react": "^2.0.2",
+    "moment": "^2.24.0",
+    "react": "^18.0.0",                   
+    "react-big-calendar": "^0.21.0",
+    "react-bootstrap": "^1.0.0-beta.8",
+    "react-date-range": "^1.0.0-beta",
+    "react-dom": "^18.0.0",              
+    "react-google-places-autocomplete": "^1.3.1",
+    "react-places-autocomplete": "^7.2.1",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "^5.0.1",
+    "sass": "^1.78.0",
+    "superagent": "^5.0.5"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.0", 
+    "webpack": "^5.88.1",                                         
+    "webpack-dev-server": "^4.15.0"                                 
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build",           
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-scripts": "^5.0.1"
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
