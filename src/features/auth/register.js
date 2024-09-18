@@ -1,5 +1,5 @@
 import React from 'react';
-import { HOME, REGISTRATION, LOGIN } from '../../dist/routes';
+import { LOGIN } from '../../dist/routes';
 import { Link } from 'react-router-dom';
 import { REQUEST_REGISTER } from '../../requests/account';
 import Controller from '../controller';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { REQUEST_EVENT_GET, REQUEST_EVENT_UPDATE , REQUEST_BOOKING } from '../../requests/event';
+import { REQUEST_EVENT_GET, REQUEST_EVENT_UPDATE  } from '../../requests/event';
 import { LOGIN, EVENT_CREATE } from '../../dist/routes';
 import Authentication from '../../helpers/auth';
 import '../../styles/event-list.css';  // Import custom CSS for additional styling

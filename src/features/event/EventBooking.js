@@ -10,7 +10,7 @@ const EventPage = () => {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [errors, setErrors] = useState({});
+    const [setErrors] = useState({});
     const [editableEvent, setEditableEvent] = useState(null);
     const [updatedTitle, setUpdatedTitle] = useState('');
     const [updatedDescription, setUpdatedDescription] = useState('');
@@ -132,7 +132,6 @@ const EventPage = () => {
 
     const renderError = () => errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : null;
     const renderSuccess = () => successMessage ? <div className="alert alert-success">{successMessage}</div> : null;
-    const renderFieldError = (field) => errors[field] ? <div className="alert alert-warning">{errors[field]}</div> : null;
     const renderLoading = () => loading ? <div className="alert alert-info">Loading...</div> : null;
 
     return (
