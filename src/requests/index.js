@@ -12,7 +12,6 @@ export const POST = (route, params) => {
 export const PUT = (route, params) => {
     return request.put(route).send(params);
 };
-
 export const getBody = (response) => {
     return response.body;
 };

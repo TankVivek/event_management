@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { REQUEST_USER_BOOKING } from '../../requests/event'; // Adjust as necessary
+import Modal from 'react-bootstrap/Modal'; // Make sure to install react-bootstrap
 
 const UserBookingsPage = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showThankYouModal, setShowThankYouModal] = useState(false);
 
     useEffect(() => {
         fetchUserBookings();
@@ -17,6 +19,9 @@ const UserBookingsPage = () => {
             const body = res.body;
             if (body.success) {
                 setBookings(body.data);
+                if (body.data.length > 0 && body.data[body.data.length - 1].status === 'confirmed') {
+                    setShowThankYouModal(true);
+                }
             } else {
                 setErrorMessage('Failed to fetch bookings');
             }
@@ -26,6 +31,8 @@ const UserBookingsPage = () => {
             setLoading(false);
         }
     };
+
+    const handleCloseModal = () => setShowThankYouModal(false);
 
     return (
         <div className="page-container">
@@ -40,6 +47,18 @@ const UserBookingsPage = () => {
                     </div>
                 ))}
             </div>
+
+            <Modal show={showThankYouModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Thank You for Booking!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Thank you for booking our slot. We look forward to seeing you at the event!</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className="btn btn-primary" onClick={handleCloseModal}>Close</button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

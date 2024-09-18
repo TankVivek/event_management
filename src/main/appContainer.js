@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import MainPage from "../features/main";
-import { HOME, LOGIN, REGISTRATION, EVENT_CREATE, VIEW_EVENTS, LOGOUT ,EVENT_BOOKING ,EVENT_BOOKING_GET,EVENT_BOOKING_CANCEL } from "../dist/routes";
+import { EVENT_CONFIRM,EVENT_DELETE,HOME, LOGIN, REGISTRATION, EVENT_CREATE, VIEW_EVENTS, LOGOUT ,EVENT_BOOKING ,EVENT_BOOKING_GET,EVENT_BOOKING_CANCEL } from "../dist/routes";
 import LoginPage from "../features/auth/login";
 import RegistrationPage from "../features/auth/register";
 import EventCreate from "../features/event/create";
@@ -10,6 +10,7 @@ import Header from "../layouts/header";
 import EventList from '../features/event/EventList'; // Adjust this path as needed
 import EventPage from '../features/event/EventBooking'; // Adjust this path as needed
 import UserBooking from '../features/event/UserBooking'; // Adjust this path as needed
+import BookingConfim from '../features/event/bookingConfim'; // Adjust this path as needed
 
 
 
@@ -82,6 +83,12 @@ class AppContainer extends Component {
                         path={EVENT_CREATE}
                         exact
                         render={() => <EventCreate />} />
+                        <Route
+                        path={EVENT_DELETE}
+                        exact
+                        render={() => <EventList />} />
+                       <Route exact path={EVENT_CONFIRM} component={BookingConfim} />
+
                 </Switch>
             </div>
         )

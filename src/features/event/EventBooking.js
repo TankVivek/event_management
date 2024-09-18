@@ -5,12 +5,12 @@ import { LOGIN, EVENT_CREATE } from '../../dist/routes';
 import Authentication from '../../helpers/auth';
 import '../../styles/event-list.css';
 
-const EventPage = () => {
+const EventList = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [setErrors] = useState({});
+    const [bookingConfirmation, setBookingConfirmation] = useState('');
     const [editableEvent, setEditableEvent] = useState(null);
     const [updatedTitle, setUpdatedTitle] = useState('');
     const [updatedDescription, setUpdatedDescription] = useState('');
@@ -21,6 +21,7 @@ const EventPage = () => {
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [membersCount, setMembersCount] = useState('');
+    const [bookingErrorMessage, setBookingErrorMessage] = useState('');
     const history = useHistory();
 
     useEffect(() => {
@@ -28,17 +29,12 @@ const EventPage = () => {
         if (!auth.isUserLoggedIn()) {
             history.push(LOGIN);
         } else {
-            const userRole = localStorage.getItem('role');
-            if (userRole) {
-                setRole(userRole);
-            } else {
-                setRole(null);
-            }
+            setRole(localStorage.getItem('role') || null);
         }
     }, [history]);
 
     useEffect(() => {
-        if (role !== null) {
+        if (role) {
             fetchEvents();
         }
     }, [role]);
@@ -62,7 +58,6 @@ const EventPage = () => {
                 setSuccessMessage('Events loaded successfully!');
             } else {
                 setErrorMessage(body.message || 'Error fetching events.');
-                setErrors(body.extras || {});
             }
         });
     };
@@ -90,7 +85,6 @@ const EventPage = () => {
                 setEditableEvent(null);
             } else {
                 setErrorMessage(body.message || 'Error updating event.');
-                setErrors(body.extras || {});
             }
         });
     };
@@ -98,25 +92,26 @@ const EventPage = () => {
     const handleBooking = (eventId) => {
         setSelectedEvent(eventId);
         setShowBookingModal(true);
+        setBookingErrorMessage('');
     };
 
     const bookEvent = () => {
         REQUEST_BOOKING(selectedEvent, membersCount, (err, res) => {
             if (err) {
-                setErrorMessage('Could not book event.');
+                setBookingErrorMessage('Could not book event.');
                 return;
             }
 
             const body = res.body;
 
             if (body.success) {
+                history.push('/confirm', { bookingDetails: { seatsCount: membersCount } });
                 setSuccessMessage('Event booked successfully!');
-                fetchEvents(); // Refresh the events list
+                setBookingConfirmation('Thank you for booking our slot!');
                 setShowBookingModal(false);
                 setMembersCount('');
             } else {
-                setErrorMessage(body.message || 'Error booking event.');
-                setErrors(body.extras || {});
+                setBookingErrorMessage(body.message || 'Error booking event.');
             }
         });
     };
@@ -130,10 +125,6 @@ const EventPage = () => {
         setUpdatedEndDate(event.endDate);
     };
 
-    const renderError = () => errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : null;
-    const renderSuccess = () => successMessage ? <div className="alert alert-success">{successMessage}</div> : null;
-    const renderLoading = () => loading ? <div className="alert alert-info">Loading...</div> : null;
-
     return (
         <div className="container mt-4 event-list-container">
             <h2 className="text-center mb-4">Event List</h2>
@@ -143,25 +134,22 @@ const EventPage = () => {
                 <Link to={EVENT_CREATE} className="btn btn-primary mb-3">Create New Event</Link>
             )}
 
-            {renderLoading()}
-            {renderError()}
-            {renderSuccess()}
+            {loading && <div className="alert alert-info">Loading...</div>}
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
+            {bookingConfirmation && <div className="alert alert-info">{bookingConfirmation}</div>}
 
             {!loading && !errorMessage && (
                 <div className="row row-cols-1 row-cols-md-2 g-4">
                     {events.map(event => (
                         <div key={event._id} className="col">
                             <div className="card h-100 w-100 event-card">
-                                <img style={{ height: '350px', width: '500px' }} className="card-img-top" src={event.image} alt={event.title} />
+                                <img className="card-img-top" src={event.image} alt={event.title} />
                                 <div className="card-body">
-                                    <h5 className="card-title" style={{ fontSize: '1.75rem', fontWeight: 'bold' }}>
-                                        {event.title}
-                                    </h5>
-                                    <p className="card-text" style={{ fontSize: '1.25rem' }}>
-                                        {event.description}
-                                    </p>
-                                    <p className="card-text" style={{ fontSize: '1rem' }}>
-                                        <small className="text-muted">
+                                    <h5 className="card-title h4">{event.title}</h5>
+                                    <p className="card-text h5">{event.description}</p>
+                                    <p className="card-text">
+                                        <small className="h6">
                                             <strong>Location:</strong> {event.location}<br />
                                             <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}<br />
                                             <strong>Remaining Seats:</strong> {event.capacity - event.bookedSeats}
@@ -196,7 +184,7 @@ const EventPage = () => {
                 <div className="mt-4">
                     <h3>Edit Event</h3>
                     <form onSubmit={(e) => { e.preventDefault(); updateEvent(editableEvent._id); }}>
-                        <div className="mb-5">
+                        <div className="mb-3">
                             <label className="form-label">Title</label>
                             <input
                                 type="text"
@@ -205,7 +193,7 @@ const EventPage = () => {
                                 onChange={(e) => setUpdatedTitle(e.target.value)}
                             />
                         </div>
-                        <div className="mb-5">
+                        <div className="mb-3">
                             <label className="form-label">Description</label>
                             <textarea
                                 className="form-control"
@@ -213,7 +201,7 @@ const EventPage = () => {
                                 onChange={(e) => setUpdatedDescription(e.target.value)}
                             />
                         </div>
-                        <div className="mb-5">
+                        <div className="mb-3">
                             <label className="form-label">Location</label>
                             <input
                                 type="text"
@@ -241,58 +229,40 @@ const EventPage = () => {
                             />
                         </div>
                         <button type="submit" className="btn btn-primary">Update Event</button>
-                        <button
-                            type="button"
-                            className="btn btn-secondary ms-3"
-                            onClick={() => setEditableEvent(null)}
-                        >
-                            Cancel
-                        </button>
                     </form>
                 </div>
             )}
 
-            {/* Booking Modal */}
-            {showBookingModal && selectedEvent && (
-                <div className="modal-backdrop show"></div>
-            )}
-
-            {showBookingModal && selectedEvent && (
-                <>
-                    <div className="modal-backdrop fade show" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}></div>
-                    <div className="modal show d-block" tabIndex="-1">
-                        <div className="modal-dialog modal-dialog-centered">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Book Event</h5>
-                                    <button type="button" className="btn-close" onClick={() => setShowBookingModal(false)}></button>
+            {showBookingModal && (
+                <div className="modal show" style={{ display: 'block' }}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Book Event</h5>
+                                <button type="button" className="btn-close" onClick={() => setShowBookingModal(false)}></button>
+                            </div>
+                            <div className="modal-body">
+                                {bookingErrorMessage && <div className="alert alert-danger">{bookingErrorMessage}</div>}
+                                <div className="mb-3">
+                                    <label className="form-label">Number of Seats</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={membersCount}
+                                        onChange={(e) => setMembersCount(e.target.value)}
+                                    />
                                 </div>
-                                <div className="modal-body">
-                                    <p className="text-muted">
-                                        Remaining Seats: <span className="fw-bold text-primary">{events.find(e => e._id === selectedEvent)?.capacity - events.find(e => e._id === selectedEvent)?.bookedSeats}</span>
-                                    </p>
-                                    <div className="mb-3">
-                                        <label className="form-label">Number of Members</label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={membersCount}
-                                            onChange={(e) => setMembersCount(e.target.value)}
-                                            min="1"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowBookingModal(false)}>Close</button>
-                                    <button type="button" className="btn btn-primary" onClick={bookEvent}>Confirm Booking</button>
-                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowBookingModal(false)}>Close</button>
+                                <button type="button" className="btn btn-primary" onClick={bookEvent}>Book Now</button>
                             </div>
                         </div>
                     </div>
-                </>
+                </div>
             )}
         </div>
     );
 };
 
-export default EventPage;
+export default EventList;

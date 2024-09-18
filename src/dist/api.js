@@ -15,3 +15,4 @@ export const EVENT_LISTING = addPrefix('api/list-events');
 export const EVENT_BOOKING = addPrefix('api/events/:eventId/book/:members');
 export const EVENT_BOOKING_GET = addPrefix('api/bookings/:id');
 export const EVENT_BOOKING_CANCEL =  addPrefix('api/bookings/:bookingId/cancel')
+export const EVENT_DELETE = addPrefix('api/events/:id')

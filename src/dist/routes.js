@@ -11,3 +11,6 @@ export const UPDATE_EVENTS = '/update-events'
 export const EVENT_BOOKING = "/events/:eventId/book"
 export const EVENT_BOOKING_GET = "/bookings"
 export const EVENT_BOOKING_CANCEL = "/bookings/:bookingId/cancel"
+export const EVENT_DELETE = "/events/:id"
+export const EVENT_CONFIRM= "/confirm"
+

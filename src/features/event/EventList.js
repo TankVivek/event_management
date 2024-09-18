@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { REQUEST_EVENT_GET, REQUEST_EVENT_UPDATE  } from '../../requests/event';
+import { REQUEST_EVENT_GET, REQUEST_EVENT_UPDATE, REQUEST_DELETE_EVENT } from '../../requests/event';
 import { LOGIN, EVENT_CREATE } from '../../dist/routes';
 import Authentication from '../../helpers/auth';
-import '../../styles/event-list.css';  // Import custom CSS for additional styling
+import '../../styles/event-list.css';
+import { FaTrashAlt } from 'react-icons/fa';
 
 const EventList = () => {
     const [events, setEvents] = useState([]);
@@ -20,27 +21,7 @@ const EventList = () => {
     const [role, setRole] = useState(null);
     const history = useHistory();
 
-    useEffect(() => {
-        const auth = new Authentication();
-        if (!auth.isUserLoggedIn()) {
-            history.push(LOGIN);
-        } else {
-            const userRole = localStorage.getItem('role');
-            if (userRole) {
-                setRole(userRole);
-            } else {
-                setRole(null);
-            }
-        }
-    }, [history]);
-
-    useEffect(() => {
-        if (role !== null) {
-            fetchEvents();
-        }
-    }, [role]);
-
-    const fetchEvents = () => {
+    const fetchEvents = useCallback(() => {
         setLoading(true);
         setErrorMessage('');
 
@@ -62,7 +43,27 @@ const EventList = () => {
                 setErrors(body.extras || {});
             }
         });
-    };
+    }, []);
+
+    useEffect(() => {
+        const auth = new Authentication();
+        if (!auth.isUserLoggedIn()) {
+            history.push(LOGIN);
+        } else {
+            const userRole = localStorage.getItem('role');
+            if (userRole) {
+                setRole(userRole);
+            } else {
+                setRole(null);
+            }
+        }
+    }, [history]);
+
+    useEffect(() => {
+        if (role !== null) {
+            fetchEvents();
+        }
+    }, [role, fetchEvents]);
 
     const updateEvent = (id) => {
         const updatedData = {
@@ -101,6 +102,27 @@ const EventList = () => {
         setUpdatedEndDate(event.endDate);
     };
 
+    const handleDelete = (id) => {
+        if (window.confirm('Are you sure you want to delete this event?')) {
+            REQUEST_DELETE_EVENT(id, (err, res) => {
+                if (err) {
+                    setErrorMessage('Could not delete event.');
+                    return;
+                }
+
+                const body = res.body;
+
+                if (body.success) {
+                    setSuccessMessage('Event deleted successfully!');
+                    fetchEvents();
+                } else {
+                    setErrorMessage(body.message || 'Error deleting event.');
+                    setErrors(body.extras || {});
+                }
+            });
+        }
+    };
+
     const renderError = () => errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : null;
     const renderSuccess = () => successMessage ? <div className="alert alert-success">{successMessage}</div> : null;
     const renderFieldError = (field) => errors[field] ? <div className="alert alert-warning">{errors[field]}</div> : null;
@@ -120,39 +142,49 @@ const EventList = () => {
             {renderSuccess()}
 
             {!loading && !errorMessage && (
-                <div className="list-group">
-                    {events.map(event => (
-                        <div key={event._id} className="list-group-item list-group-item-action event-item">
-                            <div className="d-flex align-items-start">
-                                <img
-                                    src={event.image}
-                                    alt={event.title}
-                                    className="img-thumbnail me-3 event-image"
-                                    style={{ maxWidth: '200px' }}
-                                />
-                                <div className="flex-grow-1" style={{ marginLeft: '30px' }}>
-                                    <h5 className="mb-2">{event.title}</h5>
-                                    <p className="mb-2">{event.description}</p>
-                                    <small className="text-muted">
-                                        <strong>Location:</strong> {event.location} <br />
-                                        <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
-                                    </small>
-                                </div>
+    <div className="list-group">
+        {events.map(event => (
+            <div key={event._id} className="list-group-item list-group-item-action event-item">
+                <div className="d-flex align-items-start">
+                    <img
+                        src={event.image}
+                        alt={event.title}
+                        className="img-thumbnail me-3 event-image"
+                        style={{ maxWidth: '200px' }}
+                    />
+                    <div className="flex-grow-1" style={{ marginLeft: '30px' }}>
+                        <h5 className="mb-2">{event.title}</h5>
+                        <p className="mb-2">{event.description}</p>
+                        <small className="text-muted">
+                            <strong>Location:</strong> {event.location} <br />
+                            <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                        </small>
+                    </div>
 
-                                {role === 'admin' && (
-                                    <button
-                                        className="btn btn-warning ms-3"
-                                        onClick={() => handleEditClick(event)}
-                                    >
-                                        Edit
-                                    </button>
-                                )}
-                            </div>
-                            {renderFieldError('event')}
+                    {role === 'admin' && (
+                            <div className="d-flex">
+                            <button
+                                className="btn btn-outline-primary btn-sm me-2"
+                                onClick={() => handleEditClick(event)}
+                            > 
+                                Edit
+                            </button>
+                            <button
+                                className="btn btn-outline-danger btn-sm"
+                                onClick={() => handleDelete(event._id)}
+                            >
+                                Delete
+                            </button>
                         </div>
-                    ))}
+                    )}
                 </div>
-            )}
+                {renderFieldError('event')}
+            </div>
+        ))}
+    </div>
+)}
+
+
 
             {editableEvent && (
                 <div className="mt-4">
@@ -202,10 +234,10 @@ const EventList = () => {
                                 onChange={(e) => setUpdatedEndDate(e.target.value)}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">Update Event</button>
+                        <button type="submit" className="btn btn-outline-primary btn-sm me-2">Update Event</button>
                         <button
                             type="button"
-                            className="btn btn-secondary ms-3"
+                            className="btn btn-outline-danger btn-sm"
                             onClick={() => setEditableEvent(null)}
                         >
                             Cancel
