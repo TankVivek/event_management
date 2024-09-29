@@ -5,9 +5,36 @@ import { LOGIN, EVENT_CREATE } from '../../dist/routes';
 import Authentication from '../../helpers/auth';
 import '../../styles/event-list.css';
 
+
+const LoadingSpinner = () => {
+    return (
+        <div 
+            className="d-flex justify-content-center align-items-center" 
+            style={{ 
+                width: '100vw', 
+                height: '100vh', 
+                position: 'fixed', 
+                top: 0, 
+                left: 0, 
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                zIndex: 9999
+            }} 
+            role="status"
+        >
+            <div className="spinner-border" style={{ width: '3rem', height: '3rem' }} role="status">
+                <span className="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    );
+};
+
+
+
 const EventList = () => {
     const [events, setEvents] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loadingUpdate, setLoadingUpdate] = useState(false); // New loading state for updates
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [errors, setErrors] = useState({});
@@ -64,32 +91,28 @@ const EventList = () => {
         }
     }, [role, fetchEvents]);
 
-    const updateEvent = (id) => {
-        const updatedData = {
-            title: updatedTitle,
-            description: updatedDescription,
-            location: updatedLocation,
-            startDate: updatedStartDate,
-            endDate: updatedEndDate,
-        };
-
-        REQUEST_EVENT_UPDATE(id, updatedData, (err, res) => {
-            if (err) {
-                setErrorMessage('Could not update event.');
-                return;
-            }
-
-            const body = res.body;
-
-            if (body.success) {
-                setSuccessMessage('Event updated successfully!');
-                fetchEvents();
-                setEditableEvent(null);
-            } else {
-                setErrorMessage(body.message || 'Error updating event.');
-                setErrors(body.extras || {});
-            }
-        });
+    const updateEvent = async (id, formData) => {
+        setLoadingUpdate(true); // Start loading update
+        try {
+            REQUEST_EVENT_UPDATE(id, formData, (err, res) => {
+                setLoadingUpdate(false); // Stop loading update
+                if (err) {
+                    setErrorMessage('Could not update event.');
+                    return;
+                }
+                const body = res.body;
+                if (body.success) {
+                    setSuccessMessage('Event updated successfully!');
+                    fetchEvents(); // Fetch updated events
+                    setEditableEvent(null);
+                } else {
+                    setErrorMessage(body.message || 'Error updating event.');
+                }
+            });
+        } catch (err) {
+            setLoadingUpdate(false); // Stop loading update on error
+            setErrorMessage('Could not update event.');
+        }
     };
 
     const handleEditClick = (event) => {
@@ -99,6 +122,7 @@ const EventList = () => {
         setUpdatedLocation(event.location);
         setUpdatedStartDate(event.startDate);
         setUpdatedEndDate(event.endDate);
+        setSelectedImage(null); // Reset selected image when editing an event
     };
 
     const handleDelete = (id) => {
@@ -125,7 +149,6 @@ const EventList = () => {
     const renderError = () => errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : null;
     const renderSuccess = () => successMessage ? <div className="alert alert-success">{successMessage}</div> : null;
     const renderFieldError = (field) => errors[field] ? <div className="alert alert-warning">{errors[field]}</div> : null;
-    const renderLoading = () => loading ? <div className="alert alert-info">Loading...</div> : null;
 
     return (
         <div className="container mt-4 event-list-container">
@@ -136,60 +159,75 @@ const EventList = () => {
                 <Link to={EVENT_CREATE} className="btn btn-dark mb-3">Create New Event</Link>
             )}
 
-            {renderLoading()}
+            {(loading || loadingUpdate) && <LoadingSpinner />} {/* Show spinner when loading events or updating */}
+
             {renderError()}
             {renderSuccess()}
 
             {!loading && !errorMessage && (
-    <div className="list-group">
-        {events.map(event => (
-            <div key={event._id} className="list-group-item list-group-item-action event-item">
-                <div className="d-flex align-items-start">
-                    <img
-                        src={event.image}
-                        alt={event.title}
-                        className="img-thumbnail me-3 event-image"
-                        style={{ maxWidth: '200px' }}
-                    />
-             <div className="flex-grow-1 text-dark" style={{ marginLeft: '30px', marginTop: "20px" }}>
-    <h5 className="text-dark mb-2">{event.title}</h5>
-    <p className="text-dark mb-2">{event.description}</p>
-    <small className="text-dark h6">
-        <strong>Location:</strong> {event.location} <br />
-        <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
-    </small>
-</div>
-
-
-                    {role === 'admin' && (
-                            <div className="d-flex">
-                            <button
-                                className="btn btn-outline-primary text-dark btn-sm me-2"
-                                onClick={() => handleEditClick(event)}
-                            > 
-                                Edit
-                            </button>
-                            <button
-                                className="btn btn-outline-danger text-dark btn-sm"
-                                onClick={() => handleDelete(event._id)}
-                            >
-                                Delete
-                            </button>
+                <div className="list-group">
+                    {events.map(event => (
+                        <div key={event._id} className="list-group-item list-group-item-action event-item">
+                            <div className="d-flex align-items-start">
+                                <img
+                                    src={event.image}
+                                    alt={event.title}
+                                    className="img-thumbnail me-3 event-image"
+                                    style={{ maxWidth: '200px' }}
+                                />
+                                <div className="flex-grow-1 text-dark" style={{ marginLeft: '30px', marginTop: "20px" }}>
+                                    <h5 className="text-dark mb-2">{event.title}</h5>
+                                    <p className="text-dark mb-2">{event.description}</p>
+                                    <small className="text-dark h6">
+                                        <strong>Location:</strong> {event.location} <br />
+                                        <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                                    </small>
+                                </div>
+                                {role === 'admin' && (
+                                    <div className="d-flex">
+                                        <button
+                                            className="btn btn-outline-primary text-dark btn-sm me-2"
+                                            onClick={() => handleEditClick(event)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="btn btn-outline-danger text-dark btn-sm"
+                                            onClick={() => handleDelete(event._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            {renderFieldError('event')}
                         </div>
-                    )}
+                    ))}
                 </div>
-                {renderFieldError('event')}
-            </div>
-        ))}
-    </div>
-)}
-
+            )}
 
 
             {editableEvent && (
                 <div className="mt-4">
                     <h3>Edit Event</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); updateEvent(editableEvent._id); }}>
+                    <form onSubmit={async (e) => {
+                        e.preventDefault();
+
+                        // Create a FormData object
+                        const formData = new FormData();
+                        formData.append('title', updatedTitle);
+                        formData.append('description', updatedDescription);
+                        formData.append('location', updatedLocation);
+                        formData.append('startDate', updatedStartDate);
+                        formData.append('endDate', updatedEndDate);
+
+                        // Append the image file if it exists
+                        if (selectedImage) {
+                            formData.append('image', selectedImage);
+                        }
+
+                        await updateEvent(editableEvent._id, formData);
+                    }}>
                         <div className="mb-3">
                             <label className="form-label">Title</label>
                             <input
@@ -232,6 +270,15 @@ const EventList = () => {
                                 className="form-control"
                                 value={updatedEndDate.split('T')[0]}
                                 onChange={(e) => setUpdatedEndDate(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Upload Image</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                accept="image/*"
+                                onChange={(e) => setSelectedImage(e.target.files[0])}
                             />
                         </div>
                         <button type="submit" className="btn btn-outline-primary btn-sm me-2">Update Event</button>
