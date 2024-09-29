@@ -141,45 +141,58 @@ const EventList = () => {
             {bookingConfirmation && <div className="alert alert-info">{bookingConfirmation}</div>}
 
             {!loading && !errorMessage && (
-                <div className="row-cols-1 row-cols-md-2 g-4">
-                    {events.map(event => (
-                        <div key={event._id} className="col">
-                            <div className="card h-100 w-100 event-card">
-                                <img className="card-img-top" src={event.image} alt={event.title} />
-                                <div className="card-body">
-                                    <h5 className="card-title h4">{event.title}</h5>
-                                    <p className="card-text h5">{event.description}</p>
-                                    <p className="card-text">
-                                        <small className="h6">
-                                            <strong>Location:</strong> {event.location}<br />
-                                            <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}<br />
-                                            <strong>Remaining Seats:</strong> {event.capacity - event.bookedSeats}
-                                        </small>
-                                    </p>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        {role === 'admin' && (
-                                            <button
-                                                className="btn btn-warning"
-                                                onClick={() => handleEditClick(event)}
-                                            >
-                                                Edit
-                                            </button>
-                                        )}
-                                        {role === 'user' && (
-                                            <button
-                                                className="btn btn-secondary"
-                                                onClick={() => handleBooking(event._id)}
-                                            >
-                                                Book
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+    <div className="row-cols-1 row-cols-md-2" >
+        {events.map(event => (
+            <div key={event._id} className="card h-100 d-flex flex-row" style={{ width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden',marginTop: "20px" }}>
+                
+                {/* Event Image */}
+                <img style={{  margin: "10px 10px 10px 30px", borderRadius: "10px" }}
+                    className="img-fluid" 
+                    src={event.image} 
+                    alt={event.title} 
+                />
+
+                {/* Event Details */}
+                <div className="card-body d-flex flex-column justify-content-between" style={{ paddingLeft: '50px' }}>
+                    <div>
+                        <h5 className="card-title h4 mb-2">{event.title}</h5>
+                        <p className="card-text mb-2 h5">{event.description}</p>
+                        <p className="card-text">
+                            <small className="h6">
+                                <strong>Location:</strong> {event.location}<br />
+                                <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}<br />
+                                <strong>Remaining Seats:</strong> {event.capacity - event.bookedSeats}
+                            </small>
+                        </p>
+                    </div>
+                    
+                    <div className="justify-content-between align-items-center mt-3">
+                        {role === 'admin' && (
+                            <button
+                                className="btn btn-warning"
+                                onClick={() => handleEditClick(event)}
+                            >
+                                Edit
+                            </button>
+                        )}
+                        {role === 'user' && (
+                            <button
+                                className="btn btn-secondary"
+                                onClick={() => handleBooking(event._id)}
+                            >
+                                Book
+                            </button>
+                        )}
+                    </div>
                 </div>
-            )}
+
+                
+            </div>
+        ))}
+    </div>
+)}
+
+
 
             {editableEvent && (
                 <div className="mt-4">
@@ -235,7 +248,7 @@ const EventList = () => {
             )}
 
             {showBookingModal && (
-                <div className="modal show" style={{ display: 'block' }}>
+                <div className="modal show " style={{ display: 'block' }}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
