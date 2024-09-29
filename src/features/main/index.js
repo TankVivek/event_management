@@ -68,8 +68,6 @@ const MainPage = () => {
                         <h5>Quick Links</h5>
                         <ul className="list-unstyled">
                             <li><a href="/home" className="text-white">Home</a></li>
-                            <li><a href="/home" className="text-white">Features</a></li>
-                            <li><a href="/home" className="text-white">Pricing</a></li>
                             <li><a href="/home" className="text-white">Contact</a></li>
                         </ul>
                     </div>
