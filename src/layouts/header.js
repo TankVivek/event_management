@@ -54,14 +54,21 @@ export default class Header extends Component {
 
                     </div>
                     <div>
-                        <Link to={HOME}>
-                            <button className="btn btn-secondary">Events Info</button>
-                        </Link>
-                        <Link to={LOGIN} style={{ color: 'white' }}>
-                            <button className="btn btn-primary">Login</button>
-                        </Link>
-                        {this.renderLogout()}
-                    </div>
+    <Link to={HOME}>
+        <button className="btn btn-secondary">Events Info</button>
+    </Link>
+
+    {/* Conditionally render the login button if not logged in */}
+    {!this.state.loggedIn && (
+        <Link to={LOGIN}>
+            <button className="btn btn-primary">Login</button>
+        </Link>
+    )}
+
+    {/* Render the logout button if logged in */}
+    {this.renderLogout()}
+</div>
+
                 </div>
             </header>
         );

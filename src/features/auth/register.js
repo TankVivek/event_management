@@ -115,11 +115,11 @@ export default class RegistrationPage extends Controller {
                                 <input ref="password" type="password" placeholder="Password" required />
                                 {this.renderFieldError('password')}
                             </div>
-                            <button className="btn btn-primary" disabled={loading}>
+                            <button className="btn btn-dark" disabled={loading}>
                                 {loading ? "Registering..." : "Register"}
                             </button>
                         </form>
-                        <Link to={LOGIN} className="alt-link">Already registered? Login here!</Link>
+                        <Link to={LOGIN} className="alt-link text-dark">Already registered? Login here!</Link>
                     </div>
                 </main>
                 <footer className="app-footer">

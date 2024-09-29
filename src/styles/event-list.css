@@ -1,8 +1,13 @@
+body {
+    background-color: #f8f9fa !important; /* Your desired default background color */
+}
+
 .event-list-container {
     background-color: #f8f9fa; /* Light gray background */
     border-radius: 8px; /* Rounded corners */
     padding: 20px;
     width: 100%;
+    color: #000000;
 }
 
 .event-item {

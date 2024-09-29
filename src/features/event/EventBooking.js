@@ -126,7 +126,8 @@ const EventList = () => {
     };
 
     return (
-        <div className="container mt-4 event-list-container">
+        <div className="container mt-4 event-list-container" >
+
             <h2 className="text-center mb-4">Event List</h2>
             <p className="text-center mb-4">Here are all the events</p>
 
@@ -140,7 +141,7 @@ const EventList = () => {
             {bookingConfirmation && <div className="alert alert-info">{bookingConfirmation}</div>}
 
             {!loading && !errorMessage && (
-                <div className="row row-cols-1 row-cols-md-2 g-4">
+                <div className="row-cols-1 row-cols-md-2 g-4">
                     {events.map(event => (
                         <div key={event._id} className="col">
                             <div className="card h-100 w-100 event-card">
@@ -166,7 +167,7 @@ const EventList = () => {
                                         )}
                                         {role === 'user' && (
                                             <button
-                                                className="btn btn-success"
+                                                className="btn btn-secondary"
                                                 onClick={() => handleBooking(event._id)}
                                             >
                                                 Book

@@ -151,14 +151,15 @@ const EventList = () => {
                         className="img-thumbnail me-3 event-image"
                         style={{ maxWidth: '200px' }}
                     />
-                    <div className="flex-grow-1" style={{ marginLeft: '30px' }}>
-                        <h5 className="mb-2">{event.title}</h5>
-                        <p className="mb-2">{event.description}</p>
-                        <small className="text-muted">
-                            <strong>Location:</strong> {event.location} <br />
-                            <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
-                        </small>
-                    </div>
+             <div className="flex-grow-1 text-dark" style={{ marginLeft: '30px', marginTop: "20px" }}>
+    <h5 className="text-dark mb-2">{event.title}</h5>
+    <p className="text-dark mb-2">{event.description}</p>
+    <small className="text-dark h6">
+        <strong>Location:</strong> {event.location} <br />
+        <strong>Dates:</strong> {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+    </small>
+</div>
+
 
                     {role === 'admin' && (
                             <div className="d-flex">

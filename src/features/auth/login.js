@@ -103,11 +103,11 @@ const LoginPage = ({ onLogin }) => {
                             />
                             {renderFieldError('password')}
                         </div>
-                        <button className="btn btn-primary" disabled={loading}>
+                        <button className="btn btn-dark" disabled={loading}>
                             {loading ? "Logging in..." : "Login"}
                         </button>
                     </form>
-                    <Link to={REGISTRATION} className="alt-link">Not registered? Register here!</Link>
+                    <Link to={REGISTRATION} className="alt-link text-dark">Not registered? Register here!</Link>
                 </div>
             </main>
             <footer className="app-footer">

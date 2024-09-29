@@ -36,21 +36,21 @@ const MainPage = () => {
                                 alt="Event Management Illustration" 
                             />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 textColor" >
                             <h2 className="display-4 mb-4">Manage Your Events</h2>
                             <p className="lead mb-4">Streamline your event planning and execution with our powerful tools.</p>
                             <div className="d-flex flex-wrap" style={{ gap: '2rem', marginTop: "100px" }}>
                                 {/* Link to View Events, only accessible if logged in */}
-                                <Link to={loggedIn ? VIEW_EVENTS : LOGIN} className="btn btn-primary btn-lg">View Events</Link>
+                                <Link to={loggedIn ? VIEW_EVENTS : LOGIN} className="btn text-dark btn-lg">View Events</Link>
 
                                 {/* Show Create Event button only if the user role is Admin */}
                                 {role === 'admin' && (
-                                    <Link to={EVENT_CREATE} className="btn btn-secondary btn-lg">Create Event</Link>
+                                    <Link to={EVENT_CREATE} className="btn  text-dark btn-lg">Create Event</Link>
                                 )}
 
                                 {/* Show Event Booking link only if the user is logged in */}
                                 {role === 'user' && (
-                                    <Link to={EVENT_BOOKING_GET} className="btn btn-info btn-lg">Event Booking</Link>
+                                    <Link to={EVENT_BOOKING_GET} className="btn text-dark btn-lg">Event Booking</Link>
                                 )}
                             </div>
                         </div>

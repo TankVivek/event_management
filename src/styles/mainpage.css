@@ -3,17 +3,18 @@
 .main-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 91vh;
   }
   
   .header {
-    background-color: #333;
-    color: white;
-    padding: 1rem 0;
+    background-color: #0e0e0e; /* Updated background color for the header */
+    color: #f0f0f0; /* Updated text color for the header */
+    padding: 0.4rem 0;
 }
 
 .header h1 {
     margin: 0;
+    color: #f0f0f0; /* Ensure header title text color */
 }
   
   .header .container {
@@ -24,11 +25,14 @@
   
   .header .btn {
     margin-left: 0.5rem;
+    background-color: #474747; /* Button background color */
+    color: white; /* Button text color */
+    border-radius: 5px; /* Rounded button edges */
   }
   
   .main-content {
     flex-grow: 1;
-    background-color: #f8f9fa; /* Light color */
+    background-color: #ffffff; /* Light color */
     padding: 2rem 0;
   }
   
@@ -37,9 +41,9 @@
   }
   
   .footer {
-    background-color: #343a40; /* Dark color */
-    color: #ffffff;
-    padding: 1rem 0;
+    background-color: #0e0e0e; /* Updated background color for the footer */
+    color: #f0f0f0; /* Updated footer text color */
+    padding: 0rem 0;
   }
   
   .footer .container {
@@ -53,7 +57,7 @@
   }
   
   .footer .text-white {
-    color: #ffffff;
+    color: #f0f0f0; /* Update footer text color */
   }
   
   .footer .list-unstyled {
@@ -66,7 +70,7 @@
   }
   /* Header Area Styling */
 .header_area {
-  background-color: #343a40; /* Dark background for the header */
+  background-color: #292929; /* Matching dark background */
   padding: 20px 0; /* Add vertical padding */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
@@ -102,7 +106,7 @@
 }
 
 .header_area .menu_nav .nav-link {
-  color: #fff;
+  color: #f0f0f0; /* Navbar link color */
   font-size: 16px;
   text-decoration: none;
   padding: 10px 15px;
@@ -110,16 +114,19 @@
 }
 
 .header_area .menu_nav .nav-link:hover {
-  background-color: #007bff; /* Change background on hover */
+  background-color: #3a3a3a; /* Change background on hover */
   color: #fff; /* Keep text white */
   border-radius: 5px; /* Add some rounding to the button */
 }
 
 /* Active Link */
 .header_area .menu_nav .nav-item.active .nav-link {
-  background-color: #007bff;
+  background-color: #3b3b3b;
   color: #fff;
   border-radius: 5px;
+}
+.textColor{
+  color: #2e2e2e;
 }
 
 /* Media Query for Mobile View */
