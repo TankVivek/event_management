@@ -133,7 +133,7 @@ const EventList = () => {
             <p className="text-center mb-4">Here are all the events</p>
 
             {role === 'admin' && (
-                <Link to={EVENT_CREATE} className="btn btn-primary mb-3">Create New Event</Link>
+                <Link to={EVENT_CREATE} className="btn btn-dark mb-3">Create New Event</Link>
             )}
 
             {renderLoading()}
@@ -164,13 +164,13 @@ const EventList = () => {
                     {role === 'admin' && (
                             <div className="d-flex">
                             <button
-                                className="btn btn-outline-primary btn-sm me-2"
+                                className="btn btn-outline-primary text-dark btn-sm me-2"
                                 onClick={() => handleEditClick(event)}
                             > 
                                 Edit
                             </button>
                             <button
-                                className="btn btn-outline-danger btn-sm"
+                                className="btn btn-outline-danger text-dark btn-sm"
                                 onClick={() => handleDelete(event._id)}
                             >
                                 Delete

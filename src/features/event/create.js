@@ -172,7 +172,7 @@ export default class EventCreate extends Controller {
                                         {this.state.image && <img src={URL.createObjectURL(this.state.image)} alt="Event preview" className="image-preview" />}
                                     </div>
                                     <div className="form-group">
-                                        <button type="submit" className="btn btn-primary">Create Event</button>
+                                        <button type="submit" className="btn btn-dark">Create Event</button>
                                     </div>
                                 </form>
                             </div>
