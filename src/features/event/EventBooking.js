@@ -145,12 +145,20 @@ const EventList = () => {
         {events.map(event => (
             <div key={event._id} className="card h-100 d-flex flex-row" style={{ width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden',marginTop: "20px" }}>
                 
-                {/* Event Image */}
-                <img style={{  margin: "10px 10px 10px 30px", borderRadius: "10px" }}
-                    className="img-fluid" 
-                    src={event.image} 
-                    alt={event.title} 
-                />
+            {/* Event Image */}
+<img
+    style={{
+        margin: "10px 10px 10px 30px",
+        borderRadius: "10px",
+        width: "230px",   // Set your desired fixed width
+        height: "220px",  // Set your desired fixed height
+        objectFit: "cover" // Ensures the image covers the dimensions without distorting
+    }}
+    className="img-fluid"
+    src={event.image}
+    alt={event.title}
+/>
+
 
                 {/* Event Details */}
                 <div className="card-body d-flex flex-column justify-content-between" style={{ paddingLeft: '50px' }}>
